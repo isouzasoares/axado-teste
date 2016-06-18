@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import unittest
-from axado import Axado, get_parametros
+from axado import Axado, get_parametros, CsvObject, BASE_PATH
 
 
 class TestAxado(unittest.TestCase):
@@ -19,7 +19,7 @@ class TestAxado(unittest.TestCase):
     	"""
         Valida se há path
         """
-        self.assertFalse('', self.axado.path)
+        self.assertFalse('', BASE_PATH)
 
     def test_param_error(self):
         """
@@ -40,9 +40,28 @@ class TestAxado(unittest.TestCase):
         """
         Valida parametro passado de maneira correta
         """
+        # seta os parametros corretos
         list_param = ['axado.py', 'florianopolis', 'brasilia', '50', '7']
+        # executa a def para resgate do objeto de parametros montado
         param = get_parametros(list_param)
         self.assertEquals(type(param), dict)
+
+
+class TestCsvObject(unittest.TestCase):
+
+    def test_path_nao_encontrado(self):
+        # instancia o objeto com caminho de path errado
+        csv_dict = CsvObject('fdfdas/b/c')
+        self.assertIsNone(csv_dict.rotas)
+
+    def test_path_encontrado(self):
+        # instancia o objeto com caminho de path correto
+        csv_dict = CsvObject(BASE_PATH + '/tabela/rotas.csv')
+        # valida se retornou a lista de itens
+        self.assertEquals(type(csv_dict.rotas), list)
+        # verifica se retorna pelo menos 1 objeto
+        count = len(csv_dict.rotas) > 0
+        self.assertTrue(count)
 
 if __name__ == '__main__':
 

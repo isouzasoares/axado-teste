@@ -1,6 +1,31 @@
 # -*- coding: utf-8 -*-
 import sys
 import os
+import unicodecsv
+
+# resgata o diretorio atual
+BASE_PATH = os.path.dirname(os.path.abspath(__file__))
+
+
+class CsvObject(object):
+
+    def __init__(self, path):
+    	"""
+        Setando os atributos da classe
+        """
+        self.path = path
+        self.rotas = None
+        self.cria_objeto_csv()
+
+    def cria_objeto_csv(self):
+    	"""
+        Faz a leitura do arquivo csv ou tsv e retorna
+        em formato de objeto
+        """
+        # Tenta executar a leitura do arquivo csv
+        with open(self.path) as csvfile:
+            reader = unicodecsv.DictReader(csvfile)
+            self.rotas = [i for i in reader]
 
 
 class Axado(object):
@@ -14,13 +39,6 @@ class Axado(object):
         self.destino = destino
         self.nota = nota
         self.peso = peso
-        self.path = self.get_path()
-
-    def get_path(self):
-    	"""
-        valida se retorna o path do arquivo
-        """
-        self.path = os.path.dirname(os.path.abspath(__file__))
 
 
 def get_parametros(args=[]):
@@ -37,7 +55,6 @@ def get_parametros(args=[]):
                 "peso": args[4]}
     else:
         return "Erro nos parametros passados"
-
 
 if __name__ == '__main__':
     params = get_parametros(sys.argv)
