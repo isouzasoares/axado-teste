@@ -12,7 +12,8 @@ class TestAxado(unittest.TestCase):
         """
         # Instanciando a classe Axado para
         # uso durante o processo de test
-        self.axado = Axado('a', 'b', 'c', 'd')
+        self.axado_errado = Axado('a', 'b', 'c', 'd')
+        #self.axado_valido = Axado()
 
     def test_path(self):
     	"""
@@ -54,43 +55,43 @@ class TestCsvObject(unittest.TestCase):
         """
         # instancia o objeto com caminho de path errado
         csv_dict = CsvObject('fdfdas/b/c')
-        self.assertIsNone(csv_dict.dados)
+        self.assertEquals(len(csv_dict.dados), 0)
 
     def test_path_csv_tsv(self):
         """
         Valida se retorna objeto caso o path seja encontrado
         """
         # instancia o objeto com caminho de path correto
-        csv_dict = CsvObject(BASE_PATH + '/tabela/rotas.csv')
+        csv_dict = CsvObject(BASE_PATH + '/tabela/')
         # valida se retornou a lista de itens
-        self.assertEquals(type(csv_dict.dados), list)
+        self.assertEquals(type(csv_dict.dados), dict)
         # verifica se retorna pelo menos 1 objeto
         self.assertTrue(len(csv_dict.dados) > 0)
         # verifica se realizou a leitura do tsv
-        tsv_file = CsvObject(BASE_PATH + '/tabela2/rotas.tsv')
+        tsv_file = CsvObject(BASE_PATH + '/tabela2/')
         self.assertTrue(len(tsv_file.dados) > 0)
 
     def test_filtro_rotas(self):
         """
         Executa o teste de filtro para origem e destino
         """
-        csv_dict = CsvObject(BASE_PATH + '/tabela/rotas.csv')
+        csv_dict = CsvObject(BASE_PATH + '/tabela/')
         origem = 'florianopolis'
         destino = 'brasilia'
-        self.assertTrue(len(csv_dict.filtro_dados(origem, destino)) > 0)
+        self.assertTrue(len(csv_dict.filtro_rotas(origem, destino)) > 0)
         origem = 'Belo horizonte'
         destino = 'brasilia'
-        self.assertEquals(csv_dict.filtro_dados(origem, destino), [])
+        self.assertEquals(csv_dict.filtro_rotas(origem, destino), [])
 
-    def teste_filtro_preco(self):
+    def test_filtro_precos(self):
         """
-        Executa o teste por filtro para preco e nome
+        Executa o filtro por precos
         """
-        csv_dict = CsvObject(BASE_PATH + '/tabela2/preco_por_kg.tsv')
+        csv_dict = CsvObject(BASE_PATH + '/tabela/')
         nome = 'flo'
-        self.assertTrue(len(csv_dict.filtro_dados(nome)) > 0)
-        nome = 'a'
-        self.assertFalse(len(csv_dict.filtro_dados(nome)) > 0)
+        self.assertTrue(len(csv_dict.filtro_precos(nome)) > 0)
+        nome = 'icaro'
+        self.assertTrue(len(csv_dict.filtro_precos(nome)) == 0)
 
 if __name__ == '__main__':
 
