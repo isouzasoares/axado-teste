@@ -28,7 +28,9 @@ def get_parametros(args=[]):
     Reponsável por gerar os parametros passados
     na chamado do arquivo.
     """
+    # valida se há args
     if type(args) is list and len(args) == 5:
+        # retorna o objeto dic montado
         return {"origem": args[1],
                 "destino": args[2],
                 "nota": args[3],
