@@ -2,7 +2,6 @@
 import sys
 import os
 import unicodecsv
-
 # resgata o diretorio atual
 BASE_PATH = os.path.dirname(os.path.abspath(__file__))
 
@@ -29,6 +28,23 @@ class CsvObject(object):
                 self.rotas = [i for i in reader]
         except IOError:
             return "Arquivo não encontrado"
+
+    def filtro_rotas(self, origem, destino):
+        """
+        Executa o filtro utilizando os campos origem
+        e destino
+        """
+        # Normalizando os valores para o filtro
+        origem = origem.lower()
+        destino = destino.lower()
+        items = []
+        if self.rotas:
+            # Executando o filtro de acordo com o digitado
+            for i in self.rotas:
+                if i['origem'].lower() == origem and\
+                   i['destino'].lower() == destino:
+                    items.append(i)
+        return items
 
 
 class Axado(object):

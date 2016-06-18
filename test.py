@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 import unittest
 from axado import Axado, get_parametros, CsvObject, BASE_PATH
 
@@ -50,18 +49,37 @@ class TestAxado(unittest.TestCase):
 class TestCsvObject(unittest.TestCase):
 
     def test_path_nao_encontrado(self):
+        """
+        Valida se o path dos arquivos existe
+        """
         # instancia o objeto com caminho de path errado
         csv_dict = CsvObject('fdfdas/b/c')
         self.assertIsNone(csv_dict.rotas)
 
     def test_path_encontrado(self):
+        """
+        Valida se retorna objeto caso o path seja encontrado
+        """
         # instancia o objeto com caminho de path correto
-        csv_dict = CsvObject(BASE_PATH + '/tabela2/rotas.tsv')
+        csv_dict = CsvObject(BASE_PATH + '/tabela/rotas.csv')
         # valida se retornou a lista de itens
         self.assertEquals(type(csv_dict.rotas), list)
         # verifica se retorna pelo menos 1 objeto
         count = len(csv_dict.rotas) > 0
         self.assertTrue(count)
+
+    def test_filtro_rotas(self):
+        """
+        Executa o teste de filtro para origem e destino
+        """
+        csv_dict = CsvObject(BASE_PATH + '/tabela/rotas.csv')
+        origem = 'florianopolis'
+        destino = 'brasilia'
+        count = len(csv_dict.filtro_rotas(origem, destino)) > 0
+        self.assertTrue(count)
+        origem = 'Belo horizonte'
+        destino = 'brasilia'
+        self.assertEquals(csv_dict.filtro_rotas(origem, destino), [])
 
 if __name__ == '__main__':
 
