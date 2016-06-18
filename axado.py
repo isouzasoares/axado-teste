@@ -85,18 +85,19 @@ class CsvObject(object):
 class Axado(object):
 
     def __init__(self, origem, destino, nota,
-                 peso, tabela=1):
+                 peso, tabela='tabela'):
         """Seta os atributos da classe"""
         self.origem = origem
         self.destino = destino
         self.nota = nota
         self.peso = peso
         self.tabela = tabela
+        path_tabela = '/{0}/'.format(self.tabela)
         # Valida qual diretorio ele vai acessar
         if tabela == 1:
-            self.dados = CsvObject(BASE_PATH + '/tabela/', self.peso)
+            self.dados = CsvObject(BASE_PATH + path_tabela, self.peso)
         else:
-            self.dados = CsvObject(BASE_PATH + '/tabela2/', self.peso)
+            self.dados = CsvObject(BASE_PATH + path_tabela, self.peso)
         valores = self.dados.filtro_rotas(self.origem, self.destino)
         if valores:
             self.dados = valores[0]
