@@ -12,14 +12,15 @@ class TestAxado(unittest.TestCase):
         """
         # Instanciando a classe Axado para
         # uso durante o processo de test
-        self.axado_errado = Axado('a', 'b', 'c', 'd')
-        #self.axado_valido = Axado()
+        self.axado = Axado('florianopolis', 'brasilia', '50', '7', 1)
 
-    def test_path(self):
-    	"""
-        Valida se há path
-        """
-        self.assertFalse('', BASE_PATH)
+    def test_servicos(self):
+        """Valida o retorno de servicos"""
+        self.assertEquals(self.axado.get_servicos(), 1.5)
+
+    def test_faixa(self):
+        """Valida o retorno de faixa"""
+        self.assertEquals(self.axado.get_faixa(), 84)
 
     def test_param_error(self):
         """
@@ -87,11 +88,16 @@ class TestCsvObject(unittest.TestCase):
         """
         Executa o filtro por precos
         """
-        csv_dict = CsvObject(BASE_PATH + '/tabela/')
+        csv_dict = CsvObject(BASE_PATH + '/tabela/', '7')
         nome = 'flo'
-        self.assertTrue(len(csv_dict.filtro_precos(nome)) > 0)
-        nome = 'icaro'
-        self.assertTrue(len(csv_dict.filtro_precos(nome)) == 0)
+        self.assertEquals(type(csv_dict.filtro_precos(nome)), dict)
+        self.assertEquals(csv_dict.filtro_precos(nome).get('preco'), '12')
+        csv_dict.peso = '9.99'
+        self.assertEquals(csv_dict.filtro_precos(nome).get('preco'), '12')
+        csv_dict.peso = '11'
+        self.assertEquals(csv_dict.filtro_precos(nome).get('preco'), '11')
+        csv_dict.peso = '19.99'
+        self.assertEquals(csv_dict.filtro_precos(nome).get('preco'), '11')
 
 if __name__ == '__main__':
 

@@ -9,19 +9,16 @@ BASE_PATH = os.path.dirname(os.path.abspath(__file__))
 
 class CsvObject(object):
 
-    def __init__(self, path, preco=None):
-    	"""
-        Setando os atributos da classe
-        """
+    def __init__(self, path, peso=''):
+        """Setando os atributos da classe"""
         self.path = path
         self.dados = {}
+        self.peso = peso
         self.cria_objeto_csv()
 
     def cria_objeto_csv(self):
-    	"""
-        Faz a leitura do arquivo csv ou tsv e retorna
-        em formato de objeto
-        """
+    	"""Faz a leitura do arquivo csv ou tsv e retorna
+           em formato de objeto"""
         # utilizado caso nao encontre o file
         try:
             # lista so arquivos do diretorio do path
@@ -39,25 +36,36 @@ class CsvObject(object):
         except OSError:
             return "Arquivo não encontrado"
 
-    def filtro_precos(self, nome, preco=None):
-        """
-        Executa o filtro por preços
-        """
+    def cvs_valor(self, valor):
+        """retorna o valor convertido pra float"""
+        # Responsável por validar se vai converter normalmente
+        try:
+            return float(valor)
+        except ValueError:
+            return '-'
+
+    def filtro_precos(self, nome):
+        """Executa o filtro por preços"""
         # Normalizando os valores para o filtro
         nome = nome.lower()
-        items = []
         if self.dados:
-            # Executando o filtro=
+            # Executando o filtro
             for i in self.dados.get('preco_por_kg'):
                 if i.get('nome').lower() == nome:
-                    items.append(i)
-        return items
+                    inicial = self.cvs_valor(i.get('inicial'))
+                    final = self.cvs_valor(i.get('final'))
+                    valor = self.cvs_valor(self.peso)
+                    # Valida a faixa de peso para retornar o preço correto
+                    if ((type(final) is float and type(inicial) is float) and
+                       ((valor >= inicial) and (valor < final))) or\
+                       ((type(inicial) is float and type(final) is str) and
+                       (valor >= inicial)):
+                        return i
+            return {}
 
     def filtro_rotas(self, origem, destino):
-        """
-        Executa o filtro utilizando os campos item_um
-        e item_dois, caso seja preco ele muda a regra
-        """
+        """Executa o filtro utilizando os campos item_um
+           e item_dois, caso seja preco ele muda a regra"""
         # Normalizando os valores para o filtro
         origem = origem.lower()
         destino = destino.lower()
@@ -78,20 +86,42 @@ class Axado(object):
 
     def __init__(self, origem, destino, nota,
                  peso, tabela=1):
-        """
-        Setando os atributos da classe
-        """
+        """Seta os atributos da classe"""
         self.origem = origem
         self.destino = destino
         self.nota = nota
         self.peso = peso
+        self.tabela = tabela
+        # Valida qual diretorio ele vai acessar
+        if tabela == 1:
+            self.dados = CsvObject(BASE_PATH + '/tabela/', self.peso)
+        else:
+            self.dados = CsvObject(BASE_PATH + '/tabela2/', self.peso)
+        valores = self.dados.filtro_rotas(self.origem, self.destino)
+        if valores:
+            self.dados = valores[0]
+
+    def get_servicos(self):
+        """retorna o valor dos servicos"""
+        # Caso dê um erro na conversão
+        try:
+            return float(self.nota) * float(self.dados['seguro']) / 100
+        except ValueError:
+            return '-'
+
+    def get_faixa(self):
+        """retorna o valor total da faixa"""
+        # Caso dê um erro na conversão
+        try:
+            preco = self.dados['precos']['preco']
+            return float(self.peso) * float(preco)
+        except ValueError:
+            return '-'
 
 
 def get_parametros(args=[]):
-    """
-    Reponsável por gerar os parametros passados
-    na chamado do arquivo.
-    """
+    """Reponsável por gerar os parametros passados
+       na chamado do arquivo."""
     # valida se há args
     if type(args) is list and len(args) == 5:
         # retorna o objeto dic montado
