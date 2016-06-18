@@ -21,10 +21,14 @@ class CsvObject(object):
         Faz a leitura do arquivo csv ou tsv e retorna
         em formato de objeto
         """
+        delimiter = ','
+        # Verifica se há .tsv no caminho do file
+        if self.path.endswith('.tsv'):
+            delimiter = '\t'
         # Tenta executar a leitura do arquivo csv
         try:
             with open(self.path) as csvfile:
-                reader = unicodecsv.DictReader(csvfile)
+                reader = unicodecsv.DictReader(csvfile, delimiter=delimiter)
                 self.rotas = [i for i in reader]
         except IOError:
             return "Arquivo não encontrado"
@@ -76,8 +80,9 @@ def get_parametros(args=[]):
         return "Erro nos parametros passados"
 
 if __name__ == '__main__':
+    # resgatando os parametros
     params = get_parametros(sys.argv)
-
+    # verifica se retornou um dicionario ao montar os parametros
     if type(params) is dict:
         axado = Axado(**params)
     else:

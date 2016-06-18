@@ -56,7 +56,7 @@ class TestCsvObject(unittest.TestCase):
         csv_dict = CsvObject('fdfdas/b/c')
         self.assertIsNone(csv_dict.rotas)
 
-    def test_path_encontrado(self):
+    def test_path_csv_tsv(self):
         """
         Valida se retorna objeto caso o path seja encontrado
         """
@@ -66,6 +66,10 @@ class TestCsvObject(unittest.TestCase):
         self.assertEquals(type(csv_dict.rotas), list)
         # verifica se retorna pelo menos 1 objeto
         count = len(csv_dict.rotas) > 0
+        self.assertTrue(count)
+        # verifica se realizou a leitura do tsv
+        tsv_file = CsvObject(BASE_PATH + '/tabela2/rotas.tsv')
+        count = len(tsv_file.rotas) > 0
         self.assertTrue(count)
 
     def test_filtro_rotas(self):
