@@ -23,9 +23,12 @@ class CsvObject(object):
         em formato de objeto
         """
         # Tenta executar a leitura do arquivo csv
-        with open(self.path) as csvfile:
-            reader = unicodecsv.DictReader(csvfile)
-            self.rotas = [i for i in reader]
+        try:
+            with open(self.path) as csvfile:
+                reader = unicodecsv.DictReader(csvfile)
+                self.rotas = [i for i in reader]
+        except IOError:
+            return "Arquivo não encontrado"
 
 
 class Axado(object):

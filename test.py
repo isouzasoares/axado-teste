@@ -56,7 +56,7 @@ class TestCsvObject(unittest.TestCase):
 
     def test_path_encontrado(self):
         # instancia o objeto com caminho de path correto
-        csv_dict = CsvObject(BASE_PATH + '/tabela/rotas.csv')
+        csv_dict = CsvObject(BASE_PATH + '/tabela2/rotas.tsv')
         # valida se retornou a lista de itens
         self.assertEquals(type(csv_dict.rotas), list)
         # verifica se retorna pelo menos 1 objeto
