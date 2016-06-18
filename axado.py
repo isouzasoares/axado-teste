@@ -8,12 +8,12 @@ BASE_PATH = os.path.dirname(os.path.abspath(__file__))
 
 class CsvObject(object):
 
-    def __init__(self, path):
+    def __init__(self, path, preco=None):
     	"""
         Setando os atributos da classe
         """
         self.path = path
-        self.rotas = None
+        self.dados = None
         self.cria_objeto_csv()
 
     def cria_objeto_csv(self):
@@ -29,24 +29,28 @@ class CsvObject(object):
         try:
             with open(self.path) as csvfile:
                 reader = unicodecsv.DictReader(csvfile, delimiter=delimiter)
-                self.rotas = [i for i in reader]
+                self.dados = [dado for dado in reader]
         except IOError:
             return "Arquivo não encontrado"
 
-    def filtro_rotas(self, origem, destino):
+    def filtro_dados(self, item_um, item_dois=None):
         """
-        Executa o filtro utilizando os campos origem
-        e destino
+        Executa o filtro utilizando os campos item_um
+        e item_dois, caso seja preco ele muda a regra
         """
         # Normalizando os valores para o filtro
-        origem = origem.lower()
-        destino = destino.lower()
+        item_um = item_um.lower()
+        if item_dois:
+            item_dois = item_dois.lower()
         items = []
-        if self.rotas:
+        if self.dados:
             # Executando o filtro de acordo com o digitado
-            for i in self.rotas:
-                if i['origem'].lower() == origem and\
-                   i['destino'].lower() == destino:
+            # valida a regra que sera utilizada
+            for i in self.dados:
+                # Executa o filtro de acrodo com os campos passados
+                if i.get('nome', '') == item_um or \
+                   (i.get('origem', '').lower() == item_um and
+                   i.get('destino', '').lower() == item_dois):
                     items.append(i)
         return items
 
