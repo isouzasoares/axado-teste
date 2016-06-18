@@ -13,14 +13,8 @@ class TestAxado(unittest.TestCase):
         # Instanciando a classe Axado para
         # uso durante o processo de test
         self.axado = Axado('florianopolis', 'brasilia', '50', '7', 1)
-
-    def test_servicos(self):
-        """Valida o retorno de servicos"""
-        self.assertEquals(self.axado.get_servicos(), 1.5)
-
-    def test_faixa(self):
-        """Valida o retorno de faixa"""
-        self.assertEquals(self.axado.get_faixa(), 84)
+        # Instanciando tabela 2
+        self.axado_d = Axado('florianopolis', 'brasilia', '50', '7', 2)
 
     def test_param_error(self):
         """
@@ -46,6 +40,32 @@ class TestAxado(unittest.TestCase):
         # executa a def para resgate do objeto de parametros montado
         param = get_parametros(list_param)
         self.assertEquals(type(param), dict)
+
+    def test_subtotal(self):
+        """
+        Valida se o subtotal está correto
+        """
+        self.assertEquals(self.axado.get_subtotal(), 98.5)
+        axado = Axado('Belo horizonte', 'brasilia', '50', '7', 1)
+        self.assertEquals(axado.get_subtotal(), '-')
+
+    def test_seguro(self):
+        """Valida o retorno de seguro"""
+        self.assertEquals(self.axado.get_seguro(), 1.5)
+        axado = Axado('Belo horizonte', 'brasilia', '50', '7', 1)
+        self.assertEquals(axado.get_seguro(), '-')
+
+    def test_faixa(self):
+        """Valida o retorno de faixa"""
+        self.assertEquals(self.axado.get_faixa(), 84)
+        axado = Axado('Belo horizonte', 'brasilia', '50', '7', 1)
+        self.assertEquals(axado.get_faixa(), '-')
+
+    def test_frete(self):
+        """Valida o retorno do total"""
+        self.assertEquals(self.axado.get_frete(), "104.79")
+        axado = Axado('Belo horizonte', 'brasilia', '50', '7', 1)
+        self.assertEquals(axado.get_frete(), '-')
 
 
 class TestCsvObject(unittest.TestCase):

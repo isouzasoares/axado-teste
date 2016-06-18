@@ -61,7 +61,7 @@ class CsvObject(object):
                        ((type(inicial) is float and type(final) is str) and
                        (valor >= inicial)):
                         return i
-            return {}
+        return {}
 
     def filtro_rotas(self, origem, destino):
         """Executa o filtro utilizando os campos item_um
@@ -100,22 +100,45 @@ class Axado(object):
         valores = self.dados.filtro_rotas(self.origem, self.destino)
         if valores:
             self.dados = valores[0]
+        else:
+            self.dados = {}
 
-    def get_servicos(self):
-        """retorna o valor dos servicos"""
+    def get_seguro(self):
+        """retorna o valor do seguro"""
         # Caso dê um erro na conversão
         try:
-            return float(self.nota) * float(self.dados['seguro']) / 100
-        except ValueError:
+            return float(self.nota) * float(self.dados.get('seguro', '')) / 100
+        except (ValueError, TypeError):
             return '-'
 
     def get_faixa(self):
         """retorna o valor total da faixa"""
         # Caso dê um erro na conversão
         try:
-            preco = self.dados['precos']['preco']
+            preco = self.dados.get('precos', {}).get('preco')
             return float(self.peso) * float(preco)
-        except ValueError:
+        except (ValueError, TypeError):
+            return '-'
+
+    def get_subtotal(self):
+        """retorna o valor subtotal"""
+        # Caso dê um erro na conversão
+        try:
+            fixa = self.dados.get('fixa')
+            seguro = self.get_seguro()
+            sub = float(seguro) + float(fixa) + float(self.get_faixa())
+            return sub
+        except (ValueError, TypeError):
+            return '-'
+
+    def get_frete(self):
+        """retorna o calculo """
+        # Caso dê um erro na conversão
+        try:
+            icms = self.dados.get('icms') if self.dados.get('icms') else 6
+            total = self.get_subtotal() / ((100 - float(icms)) / 100)
+            return "%.2f" % total
+        except (ValueError, TypeError):
             return '-'
 
 
