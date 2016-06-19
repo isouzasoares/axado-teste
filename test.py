@@ -81,6 +81,12 @@ class TestAxado(unittest.TestCase):
         self.assertEquals(self.axado.get_frete(), "tabela:3, 104.79")
         self.assertNotEquals(self.axado_d.get_frete(), "tabela:3, 104.79")
 
+    def test_frete_limite(self):
+        """Valida se há retorno para frente com tabela de limites"""
+        axado = Axado('saopaulo', 'florianopolis', '50', '100',
+                      'tabela2')
+        self.assertNotEquals(axado.get_frete(), "tabela2:-, -")
+
 
 class TestCsvObject(unittest.TestCase):
 
