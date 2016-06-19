@@ -14,8 +14,8 @@ python 2.7
 Use virtualenv ::
 ```
  É aconselhavél que se utilize virtual env, para montagem do ambinte de execução.
- - https://virtualenv.pypa.io/en/stable/
 ```
+ - https://virtualenv.pypa.io/en/stable/
 
 Clone do reposítório ::
 ```
