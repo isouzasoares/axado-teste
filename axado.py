@@ -3,6 +3,7 @@ import sys
 import os
 import unicodecsv
 import re
+from decimal import Decimal, ROUND_UP
 # resgata o diretorio atual
 BASE_PATH = os.path.dirname(os.path.abspath(__file__))
 
@@ -13,7 +14,6 @@ class CsvObject(object):
         """Setando os atributos da classe"""
         self.path = path
         self.dados = {}
-        self.peso = peso
         self.cria_objeto_csv()
 
     def cria_objeto_csv(self):
@@ -37,14 +37,13 @@ class CsvObject(object):
             return "Arquivo não encontrado"
 
     def cvs_valor(self, valor):
-        """retorna o valor convertido pra float"""
-        # Responsável por validar se vai converter normalmente
+        """Retorna o valor convertido pra float"""
         try:
             return float(valor)
         except ValueError:
             return '-'
 
-    def filtro_precos(self, nome):
+    def filtro_precos(self, nome, peso):
         """Executa o filtro por preços"""
         # Normalizando os valores para o filtro
         nome = nome.lower()
@@ -54,7 +53,7 @@ class CsvObject(object):
                 if i.get('nome').lower() == nome:
                     inicial = self.cvs_valor(i.get('inicial'))
                     final = self.cvs_valor(i.get('final'))
-                    valor = self.cvs_valor(self.peso)
+                    valor = self.cvs_valor(peso)
                     # Valida a faixa de peso para retornar o preço correto
                     if ((type(final) is float and type(inicial) is float) and
                        ((valor >= inicial) and (valor < final))) or\
@@ -63,7 +62,7 @@ class CsvObject(object):
                         return i
         return {}
 
-    def filtro_rotas(self, origem, destino):
+    def filtro_rotas(self, origem, destino, peso):
         """Executa o filtro utilizando os campos item_um
            e item_dois, caso seja preco ele muda a regra"""
         # Normalizando os valores para o filtro
@@ -72,12 +71,14 @@ class CsvObject(object):
         items = []
         if self.dados:
             # Executando o filtro de acordo com o digitado
-            # valida a regra que sera utilizada
             for i in self.dados.get('rotas'):
-                # Executa o filtro de acrodo com os campos passados
+                # Executa o filtro de acordo com os campos passados
+                limite = self.cvs_valor(i.get('limite', 0))
                 if (i.get('origem', '').lower() == origem and
-                   i.get('destino', '').lower() == destino):
-                    i['precos'] = self.filtro_precos(i['kg'])
+                   i.get('destino', '').lower() == destino) and\
+                   ((limite and peso <= limite) or
+                   limite == 0):
+                    i['precos'] = self.filtro_precos(i['kg'], peso)
                     items.append(i)
         return items
 
@@ -94,15 +95,17 @@ class Axado(object):
         self.tabela = tabela
         path_tabela = '/{0}/'.format(self.tabela)
         # Valida qual diretorio ele vai acessar
-        if tabela == 1:
+        if tabela == 'tabela':
             self.dados = CsvObject(BASE_PATH + path_tabela, self.peso)
         else:
             self.dados = CsvObject(BASE_PATH + path_tabela, self.peso)
-        valores = self.dados.filtro_rotas(self.origem, self.destino)
-        if valores:
-            self.dados = valores[0]
+        self.dados = self.dados.filtro_rotas(self.origem, self.destino,
+                                             self.peso)
+        if self.dados:
+            self.dados = self.dados[0]
         else:
             self.dados = {}
+        self.prazo = self.dados.get('prazo', '-')
 
     def get_seguro(self):
         """retorna o valor do seguro"""
@@ -125,22 +128,40 @@ class Axado(object):
         """retorna o valor subtotal"""
         # Caso dê um erro na conversão
         try:
-            fixa = self.dados.get('fixa')
+            # se tiver fixa na tabela ele resgata
+            # caso contrário ele seta 0 para soma
+            fixa = self.dados.get('fixa') if self.dados.get('fixa') else 0
             seguro = self.get_seguro()
             sub = float(seguro) + float(fixa) + float(self.get_faixa())
+            if self.dados.get('alfandega'):
+                alfandega = sub * (float(self.dados.get('alfandega')) / 100)
+                sub += alfandega
             return sub
         except (ValueError, TypeError):
             return '-'
 
-    def get_frete(self):
-        """retorna o calculo """
+    def get_total(self):
+        """retorna o calculo total"""
         # Caso dê um erro na conversão
         try:
             icms = self.dados.get('icms') if self.dados.get('icms') else 6
             total = self.get_subtotal() / ((100 - float(icms)) / 100)
-            return "%.2f" % total
+            if type(total) is float:
+                # Converte valor para exibição arredondado
+                total = Decimal(total)
+                total = float(total.quantize(Decimal('.01'),
+                              rounding=ROUND_UP))
+                return total
         except (ValueError, TypeError):
             return '-'
+
+    def get_frete(self):
+        """retorna o frete para saida no terminal"""
+        total = self.get_total()
+        # Verifica se o valor total é float para conversão correta
+        if type(total) is float:
+            return "%s:%s, %.2f" % (self.tabela, self.prazo, total)
+        return "%s:%s, %s" % (self.tabela, self.prazo, self.get_total())
 
 
 def get_parametros(args=[]):
@@ -161,6 +182,10 @@ if __name__ == '__main__':
     params = get_parametros(sys.argv)
     # verifica se retornou um dicionario ao montar os parametros
     if type(params) is dict:
-        axado = Axado(**params)
+        axado_one = Axado(**params)
+        params['tabela'] = 'tabela2'
+        axado_two = Axado(**params)
+        print axado_one.get_frete()
+        print axado_two.get_frete()
     else:
         print params
