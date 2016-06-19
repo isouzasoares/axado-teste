@@ -18,7 +18,8 @@ class CsvObject(object):
 
     def cria_objeto_csv(self):
     	"""Faz a leitura do arquivo csv ou tsv e retorna
-           em formato de objeto"""
+        em formato de objeto
+        """
         # utilizado caso nao encontre o file
         try:
             # lista so arquivos do diretorio do path
@@ -37,14 +38,16 @@ class CsvObject(object):
             return "Arquivo não encontrado"
 
     def cvs_valor(self, valor):
-        """Retorna o valor convertido pra float"""
+        """Retorna o valor convertido para float,
+        caso contrário - será o retorno
+        """
         try:
             return float(valor)
         except ValueError:
             return '-'
 
     def filtro_precos(self, nome, peso):
-        """Executa o filtro por preços"""
+        """Executa o filtro por peso"""
         # Normalizando os valores para o filtro
         nome = nome.lower()
         if self.dados:
@@ -64,7 +67,8 @@ class CsvObject(object):
 
     def filtro_rotas(self, origem, destino, peso):
         """Executa o filtro utilizando os campos item_um
-           e item_dois, caso seja preco ele muda a regra"""
+        e item_dois, caso seja preco ele muda a regra
+        """
         # Normalizando os valores para o filtro
         origem = origem.lower()
         destino = destino.lower()
@@ -87,7 +91,7 @@ class Axado(object):
 
     def __init__(self, origem, destino, nota,
                  peso, tabela='tabela'):
-        """Seta os atributos da classe"""
+        """Seta os atributos da classe, item tabela é default"""
         self.origem = origem
         self.destino = destino
         self.nota = nota
@@ -103,8 +107,9 @@ class Axado(object):
             self.dados = {}
         self.prazo = self.dados.get('prazo', '-')
 
+    # Abaixo os métodos de cálculo
     def get_seguro(self):
-        """retorna o valor do seguro"""
+        """Retorna o valor do seguro"""
         # Caso dê um erro na conversão
         try:
             return float(self.nota) * float(self.dados.get('seguro', '')) / 100
@@ -112,7 +117,7 @@ class Axado(object):
             return '-'
 
     def get_faixa(self):
-        """retorna o valor total da faixa"""
+        """Retorna o valor total da faixa"""
         # Caso dê um erro na conversão
         try:
             preco = self.dados.get('precos', {}).get('preco')
@@ -121,7 +126,7 @@ class Axado(object):
             return '-'
 
     def get_subtotal(self):
-        """retorna o valor subtotal"""
+        """Retorna o valor subtotal caso contrário retorno é -"""
         # Caso dê um erro na conversão
         try:
             # se tiver fixa na tabela ele resgata
@@ -137,7 +142,7 @@ class Axado(object):
             return '-'
 
     def get_total(self):
-        """retorna o calculo total"""
+        """Retorna o calculo total arredondado"""
         # Caso dê um erro na conversão
         try:
             icms = self.dados.get('icms') if self.dados.get('icms') else 6
@@ -152,7 +157,7 @@ class Axado(object):
             return '-'
 
     def get_frete(self):
-        """retorna o frete para saida no terminal"""
+        """Retorna o frete para saida no terminal"""
         total = self.get_total()
         # Verifica se o valor total é float para conversão correta
         if type(total) is float:
@@ -162,7 +167,8 @@ class Axado(object):
 
 def get_parametros(args=[]):
     """Reponsável por gerar os parametros passados
-       na chamado do arquivo."""
+    na chamado do arquivo.
+    """
     # valida se há args
     if type(args) is list and len(args) == 5:
         # retorna o objeto dic montado

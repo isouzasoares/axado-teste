@@ -8,8 +8,8 @@ class TestAxado(unittest.TestCase):
 
     def setUp(self):
     	"""Inicializador da variavel que será
-           usado durante o teste, de acordo com as
-           planilhas
+        usado durante o teste, de acordo com as
+        planilhas
         """
         # Instanciando a classe Axado para
         # uso durante o processo de test
@@ -22,7 +22,7 @@ class TestAxado(unittest.TestCase):
 
     def test_param_error(self):
         """Valida a geração dos parametros errado passados
-           na chamado do arquivo axado.py
+        na chamado do arquivo axado.py
         """
         # deixando parametros vazio
         param = get_parametros()
