@@ -13,7 +13,7 @@ python 2.7
 
 Use virtualenv ::
 ```
- É aconselhavél que se utilize virtual env, para montagem do ambinte de execução.
+ É aconselhavél que se utilize virtual env, para montagem do ambiente de execução.
 ```
  - https://virtualenv.pypa.io/en/stable/
 
@@ -26,12 +26,12 @@ pip install -r requirements.txt
 
 Execução dos testes ::
 ```
-Dentro do repositório execute:
+Dentro de axado-teste:
 python test.py
 ```
 
 Calculando o frete ::
 ```
-Dentro do repositório execute:
+Dentro de axado-teste:
 python axado.py <origem> <destino> <nota_fiscal> <peso>
 ```
