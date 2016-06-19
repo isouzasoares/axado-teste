@@ -98,7 +98,9 @@ class Axado(object):
         self.peso = float(peso)
         self.tabela = tabela
         path_tabela = '/{0}/'.format(self.tabela)
+        # Instanciando a classe de leituro de CSV
         csv_object = CsvObject(BASE_PATH + path_tabela)
+        # Filtrando os items já relacionados.
         self.dados = csv_object.filtro_rotas(self.origem, self.destino,
                                              self.peso)
         if self.dados:
