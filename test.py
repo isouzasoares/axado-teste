@@ -123,6 +123,7 @@ class TestCsvObject(unittest.TestCase):
         """Executa teste do filtro de preços por peso"""
         # instanciando para tabela do tipo 1
         csv_dict = CsvObject(BASE_PATH + '/tabela/')
+        tsv_dict = CsvObject(BASE_PATH + '/tabela2/')
         nome = 'flo'
         peso = 7
         # Verifica se o retorno é do tipo dict
@@ -134,11 +135,14 @@ class TestCsvObject(unittest.TestCase):
         self.assertEquals(csv_dict.filtro_precos(nome, peso).get('preco'),
                           '12')
         peso = '11'
-        self.assertEquals(csv_dict.filtro_precos(nome, peso).get('preco'),
-                          '11')
+        self.assertEquals(tsv_dict.filtro_precos(nome, peso).get('preco'),
+                          '14.5')
         peso = '19.99'
-        self.assertEquals(csv_dict.filtro_precos(nome, peso).get('preco'),
-                          '11')
+        self.assertEquals(tsv_dict.filtro_precos(nome, peso).get('preco'),
+                          '14.5')
+        peso = '20'
+        self.assertEquals(tsv_dict.filtro_precos(nome, peso).get('preco'),
+                          '13.5')
 
     def test_limit_peso(self):
         """Executa o teste de limite de peso para o tipo tabela 2"""
