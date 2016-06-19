@@ -177,7 +177,8 @@ def get_parametros(args=[]):
                 "nota": args[3],
                 "peso": args[4]}
     else:
-        return "Erro nos parametros passados"
+        msg = "Execute python axado.py <origem> <destino> <nota_fiscal> <peso>"
+        return msg
 
 if __name__ == '__main__':
     # resgatando os parametros

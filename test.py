@@ -26,13 +26,14 @@ class TestAxado(unittest.TestCase):
         """
         # deixando parametros vazio
         param = get_parametros()
-        self.assertEquals(param, 'Erro nos parametros passados')
+        msg = "Execute python axado.py <origem> <destino> <nota_fiscal> <peso>"
+        self.assertEquals(param, msg)
         # passa parametro de qualquer maneira
         param = get_parametros('menor exigido')
-        self.assertEquals(param, 'Erro nos parametros passados')
+        self.assertEquals(param, msg)
         # passando lista menor que o exigido
         param = get_parametros(['a', 'b', 'c'])
-        self.assertEquals(param, 'Erro nos parametros passados')
+        self.assertEquals(param, msg)
 
     def test_param(self):
         """Valida parametro passado de maneira correta"""
