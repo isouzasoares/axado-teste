@@ -26,12 +26,12 @@ pip install -r requirements.txt
 
 Execução dos testes ::
 ```
-Dentro de axado-teste:
+Dentro do diretório axado-teste execute:
 python test.py
 ```
 
 Calculando o frete ::
 ```
-Dentro de axado-teste:
+Dentro do diretório axado-teste execute:
 python axado.py <origem> <destino> <nota_fiscal> <peso>
 ```
