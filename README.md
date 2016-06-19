@@ -1,12 +1,12 @@
 Cálculo de frete axado
 ======================
 
-Teste axado para cálculo de fretes, de acordo com os dados pré cadastrados nas planilha.
+Teste axado para cálculo de fretes, de acordo com os dados pré cadastrados nas planilhas.
 
 Quickstart
 ---------------
 
-Versão do compatível:
+Versão do python compatível:
 ```
 python 2.7
 ```
@@ -14,7 +14,7 @@ python 2.7
 Use virtualenv ::
 ```
  É aconselhavél que se utilize virtual env, para montagem do ambinte de execução.
- Veja em https://virtualenv.pypa.io/en/stable/
+ - https://virtualenv.pypa.io/en/stable/
 ```
 
 Clone do reposítório ::
