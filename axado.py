@@ -73,6 +73,7 @@ class CsvObject(object):
         origem = origem.lower()
         destino = destino.lower()
         items = []
+        peso = self.cvs_valor(peso)
         if self.dados:
             # Executando o filtro de acordo com o digitado
             for i in self.dados.get('rotas'):
@@ -95,7 +96,7 @@ class Axado(object):
         self.origem = origem
         self.destino = destino
         self.nota = nota
-        self.peso = float(peso)
+        self.peso = peso
         self.tabela = tabela
         path_tabela = '/{0}/'.format(self.tabela)
         # Instanciando a classe de leituro de CSV
